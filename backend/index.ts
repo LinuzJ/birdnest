@@ -24,7 +24,7 @@ interface Coord {
 type DroneObservationStatus = Pilot & { updatedAt: Date }
 
 const app = express()
-const port = 3000
+const port = 5000
 
 const dronesUrl: string = "assignments.reaktor.com/birdnest/drones"
 const pilotUrl: string = "assignments.reaktor.com/birdnest/pilots/"
@@ -103,7 +103,7 @@ async function updatePilotStatus(listOfActievDrones: Drone[]) {
 	}
 }
 
-app.get("/", (req, res) => {
+app.get("/status", (req, res) => {
 	res.send(store)
 })
 
