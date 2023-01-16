@@ -75,9 +75,14 @@ async function updatePilots() {
 		if (drone.serialNumber in observations) {
 			observations[drone.serialNumber].updatedAt = currentTime
 
-			observations[drone.serialNumber].mostRecentDistance = distance
-			if (distance < observations[drone.serialNumber].closestDistance) {
-				observations[drone.serialNumber].closestDistance = distance
+			observations[drone.serialNumber].mostRecentDistance =
+				convertToMeters(distance)
+			if (
+				convertToMeters(distance) <
+				observations[drone.serialNumber].closestDistance
+			) {
+				observations[drone.serialNumber].closestDistance =
+					convertToMeters(distance)
 			}
 		} else {
 			const pilot = await getPilotInfo(drone.serialNumber)
@@ -85,8 +90,8 @@ async function updatePilots() {
 			observations[drone.serialNumber] = {
 				...pilot,
 				updatedAt: currentTime,
-				closestDistance: distance,
-				mostRecentDistance: distance,
+				closestDistance: convertToMeters(distance),
+				mostRecentDistance: convertToMeters(distance),
 			}
 		}
 	}
@@ -134,4 +139,8 @@ function distanceBetweenDroneAndCenter(drone: Drone): number {
 
 function distance(a: Coord, b: Coord): number {
 	return Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2))
+}
+
+function convertToMeters(x: number): number {
+	return Math.round(x / 100) / 10
 }

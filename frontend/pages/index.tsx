@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react"
-import { Table } from "rsuite"
+import { Table, Container } from "rsuite"
+import "rsuite-table/dist/css/rsuite-table.css"
 
 interface Drone {
 	serialNumber: string
@@ -32,54 +33,72 @@ export default function Home({}) {
 			})
 			const data = await res.json()
 			setRows(data)
-			console.log(rows)
 		}, 2000)
 
 		return () => {
 			clearInterval(interval)
 		}
-	}, [])
+	}, [rows])
 
 	return (
-		<div>
-			<div>Birdnest</div>
-			<Table
-				height={400}
-				data={rows}
-				onRowClick={(rowData) => {
-					console.log(rowData)
-				}}
-			>
-				<Column width={60} align='center' fixed>
-					<HeaderCell>PilotID</HeaderCell>
-					<Cell dataKey='pilotId' />
-				</Column>
+		<div
+			style={{
+				display: "flex",
+				flexDirection: "column",
+				fontFamily: "monospace",
+				alignItems: "center",
+				padding: "10%",
+			}}
+		>
+			<p style={{ fontSize: "3rem" }}>Birdnest</p>
+			<div style={{ width: "80%", maxWidth: "1200px" }}>
+				<Table
+					height={500}
+					data={rows}
+					onRowClick={(rowData) => {
+						console.log(rowData)
+					}}
+					wordWrap='break-word'
+				>
+					<Column width={200} align='center' fixed>
+						<HeaderCell>Pilot ID</HeaderCell>
+						<Cell dataKey='pilotId' />
+					</Column>
 
-				<Column width={150}>
-					<HeaderCell>First Name</HeaderCell>
-					<Cell dataKey='firstName' />
-				</Column>
+					<Column width={100}>
+						<HeaderCell>First Name</HeaderCell>
+						<Cell dataKey='firstName' />
+					</Column>
 
-				<Column width={150}>
-					<HeaderCell>Last Name</HeaderCell>
-					<Cell dataKey='lastName' />
-				</Column>
+					<Column width={100}>
+						<HeaderCell>Last Name</HeaderCell>
+						<Cell dataKey='lastName' />
+					</Column>
 
-				<Column width={100}>
-					<HeaderCell>Phone Number</HeaderCell>
-					<Cell dataKey='phoneNumber' />
-				</Column>
+					<Column width={140}>
+						<HeaderCell>Phone Number</HeaderCell>
+						<Cell dataKey='phoneNumber' />
+					</Column>
 
-				<Column width={100}>
-					<HeaderCell>Email</HeaderCell>
-					<Cell dataKey='email' />
-				</Column>
+					<Column width={250}>
+						<HeaderCell>Email</HeaderCell>
+						<Cell dataKey='email' />
+					</Column>
 
-				<Column width={150}>
-					<HeaderCell>Drone Serial Number</HeaderCell>
-					<Cell dataKey='serialNumber' />
-				</Column>
-			</Table>
+					<Column width={170}>
+						<HeaderCell>Drone Serial Number</HeaderCell>
+						<Cell dataKey='serialNumber' />
+					</Column>
+					<Column width={80}>
+						<HeaderCell>Most Recent Distance (m)</HeaderCell>
+						<Cell dataKey='mostRecentDistance' />
+					</Column>
+					<Column width={80}>
+						<HeaderCell>Closest Distance (m)</HeaderCell>
+						<Cell dataKey='closestDistance' />
+					</Column>
+				</Table>
+			</div>
 		</div>
 	)
 }
