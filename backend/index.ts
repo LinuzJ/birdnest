@@ -1,6 +1,6 @@
-import express, { json } from "express"
-const { XMLParser, XMLBuilder, XMLValidator } = require("fast-xml-parser")
-console.log("hej")
+import express from "express"
+import { XMLParser } from "fast-xml-parser"
+
 interface Drone {
 	serialNumber: string
 	positionY: number
@@ -16,115 +16,112 @@ interface Pilot {
 	email: string
 }
 
-interface Coord {
-	x: number
-	y: number
+type DroneObservation = Pilot & {
+	updatedAt: Date
+	closestDistance: number
+	mostRecentDistance: number
 }
-
-type DroneObservationStatus = Pilot & { updatedAt: Date }
 
 const app = express()
 const port = 5001
 
+app.get("/status", (_, res) => {
+	res.send(observations)
+})
+
+app.listen(port, () => {
+	console.log(`Listening on port ${port}`)
+})
+
 const dronesUrl: string = "assignments.reaktor.com/birdnest/drones"
 const pilotUrl: string = "assignments.reaktor.com/birdnest/pilots/"
 
-console.log("hej")
-// State of pilots that have had drones in the area in the previous 10min
-const store: { [serialNumber: string]: DroneObservationStatus } = {}
+// All pilots that have had drones in NDZ during the last 10min
+const observations: { [serialNumber: string]: DroneObservation } = {}
 
-function distanceBetweenPoints(pointOne: Coord, pointTwo: Coord): number {
-	return Math.sqrt(
-		Math.pow(pointTwo.x - pointOne.x, 2) + Math.pow(pointTwo.y - pointOne.y, 2)
-	)
+setInterval(async () => {
+	updatePilots()
+
+	// Remove old pilots
+	const currentTime = new Date()
+	for (var key of Object.keys(observations)) {
+		if (
+			currentTime.getTime() - observations[key].updatedAt.getTime() >
+			10 * 60 * 1000
+		) {
+			delete observations[key]
+		}
+	}
+}, 2000)
+
+async function updatePilots() {
+	const drones = await getAllCurrentDrones()
+	const dronesWithinRange = drones.filter((drone) => {
+		return distanceBetweenDroneAndCenter(drone) < 100000
+	})
+
+	const currentTime: Date = new Date()
+	for (var drone of dronesWithinRange) {
+		if (drone.serialNumber in observations) {
+			observations[drone.serialNumber].updatedAt = currentTime
+
+			const distance = distanceBetweenDroneAndCenter(drone)
+			observations[drone.serialNumber].mostRecentDistance = distance
+			if (distance < observations[drone.serialNumber].closestDistance) {
+				observations[drone.serialNumber].closestDistance = distance
+			}
+		} else {
+			const pilot = await getPilotInfo(drone.serialNumber)
+
+			observations[drone.serialNumber] = {
+				...drone,
+				...pilot,
+				updatedAt: currentTime,
+			}
+		}
+	}
 }
 
-console.log("hej")
-function distanceBetweenDroneAndCenter(drone: Drone): number {
-	const centerCoords: Coord = {
-		x: 250000,
-		y: 250000,
-	}
-	const droneCoords: Coord = {
-		x: drone.positionX,
-		y: drone.positionY,
-	}
-	return distanceBetweenPoints(centerCoords, droneCoords)
-}
-
-console.log("hej")
 // Function to get all drones within 500m of the birdsnest
 async function getAllCurrentDrones(): Promise<Drone[]> {
 	const parser = new XMLParser()
+
 	// request from api
-	const raw = await fetch(dronesUrl)
-	const xmlAsText = await raw.text()
-	// parse
+	const response = await fetch(dronesUrl)
+	const xmlAsText = await response.text()
+
 	const parsed = await parser.parse(xmlAsText)
+	// We could check that the type is correct but for the purpose of this
+	// exercise we simply cast it.
 	const drones: Drone[] = parsed.report.capture.drone
 
 	return drones
 }
 
 async function getPilotInfo(serialNumber: string): Promise<Pilot> {
-	// Get pilot data
-	const rawResponse = await fetch(`${pilotUrl}${serialNumber}`)
+	const response = await fetch(`${pilotUrl}${serialNumber}`)
 
-	// Parse
-	const jsonPilotData: Pilot = await rawResponse.json()
-	return jsonPilotData
+	// Again, we assume the response type is correct.
+	return await response.json()
 }
 
-async function updatePilotStatus(listOfActievDrones: Drone[]) {
-	// Check which drones are within range
-	const dronesWithinRange = listOfActievDrones.filter((drone: Drone) => {
-		return distanceBetweenDroneAndCenter(drone) < 100000
-	})
-	// Get pilot and update status if needed
-	const currentDronesWithPilot: (Pilot & Drone)[] = await Promise.all(
-		dronesWithinRange.map(async (drone: Drone) => {
-			return {
-				...drone,
-				...(await getPilotInfo(drone.serialNumber)),
-			}
-		})
-	)
-
-	const currentTime: Date = new Date()
-	for (var pilotAndDrone of currentDronesWithPilot) {
-		if (store.hasOwnProperty(pilotAndDrone.serialNumber)) {
-			// If pilot in store
-			store[pilotAndDrone.serialNumber].updatedAt = currentTime
-		} else {
-			// If pilot not in store
-			const storeAddition: DroneObservationStatus = {
-				...pilotAndDrone,
-				updatedAt: currentTime,
-			}
-			store[pilotAndDrone.serialNumber] = storeAddition
-		}
-	}
+interface Coord {
+	x: number
+	y: number
 }
-console.log("hej")
 
-app.get("/status", (req, res) => {
-	res.send(store)
-})
-console.log("hej")
-
-app.listen(port, () => {
-	console.log(`Example app listening on port ${port}`)
-})
-
-setInterval(async () => {
-	// Update store
-	updatePilotStatus(await getAllCurrentDrones())
-
-	// Remove old pilots
-	const currentTime: Date = new Date()
-	for (var key of Object.keys(store)) {
-		if (currentTime.getTime() - store[key].updatedAt.getTime() > 600000) {
-			delete store[key]
-		}
+function distanceBetweenDroneAndCenter(drone: Drone): number {
+	const centerCoords = {
+		x: 250000,
+		y: 250000,
 	}
-}, 2000)
+	const droneCoords = {
+		x: drone.positionX,
+		y: drone.positionY,
+	}
+	return distance(centerCoords, droneCoords)
+}
+
+function distance(a: Coord, b: Coord): number {
+	return Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2))
+}
