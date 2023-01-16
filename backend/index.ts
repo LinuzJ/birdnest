@@ -62,10 +62,11 @@ async function updatePilots() {
 
 	const currentTime: Date = new Date()
 	for (var drone of dronesWithinRange) {
+		const distance = distanceBetweenDroneAndCenter(drone)
+
 		if (drone.serialNumber in observations) {
 			observations[drone.serialNumber].updatedAt = currentTime
 
-			const distance = distanceBetweenDroneAndCenter(drone)
 			observations[drone.serialNumber].mostRecentDistance = distance
 			if (distance < observations[drone.serialNumber].closestDistance) {
 				observations[drone.serialNumber].closestDistance = distance
@@ -74,9 +75,10 @@ async function updatePilots() {
 			const pilot = await getPilotInfo(drone.serialNumber)
 
 			observations[drone.serialNumber] = {
-				...drone,
 				...pilot,
 				updatedAt: currentTime,
+				closestDistance: distance,
+				mostRecentDistance: distance,
 			}
 		}
 	}
