@@ -1,6 +1,6 @@
 import express from "express"
 import { XMLParser } from "fast-xml-parser"
-var cors = require("cors")
+import cors from "cors"
 
 interface Drone {
 	serialNumber: string
