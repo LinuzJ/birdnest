@@ -1,4 +1,3 @@
-import Head from "next/head"
 import React, { useEffect, useState } from "react"
 import { Table } from "rsuite"
 
@@ -19,7 +18,7 @@ interface Pilot {
 
 type Status = Pilot & { updatedAt: Date; serialNumber: string }
 
-const backendUrl = "localhost:5001"
+const backendUrl = "http://localhost:5001"
 
 const { Column, HeaderCell, Cell } = Table
 
@@ -33,7 +32,9 @@ export default function Home({}) {
 			})
 			const data = await res.json()
 			setRows(data)
+			console.log(rows)
 		}, 2000)
+
 		return () => {
 			clearInterval(interval)
 		}

@@ -1,5 +1,6 @@
 import express from "express"
 import { XMLParser } from "fast-xml-parser"
+var cors = require("cors")
 
 interface Drone {
 	serialNumber: string
@@ -23,6 +24,7 @@ type DroneObservation = Pilot & {
 }
 
 const app = express()
+app.use(cors())
 const port = 5001
 
 app.get("/status", (_, res) => {
