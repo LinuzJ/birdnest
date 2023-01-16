@@ -44,6 +44,7 @@ export default function Home({}) {
 		<div
 			style={{
 				display: "flex",
+				justifyContent: "space-evenly",
 				flexDirection: "column",
 				fontFamily: "monospace",
 				alignItems: "center",
@@ -52,6 +53,10 @@ export default function Home({}) {
 		>
 			<p className='header' style={{ fontSize: "3rem" }}>
 				Birdnest
+			</p>
+			<p>
+				List of all pilots that have flown their drones within 100m of the
+				birdnest in the past 10min
 			</p>
 			<div style={{ width: "80%", maxWidth: "1200px" }}>
 				<Table
