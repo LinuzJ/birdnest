@@ -26,7 +26,13 @@ const app = express()
 const port = 5001
 
 app.get("/status", (_, res) => {
-	res.send(observations)
+	const statusResponse = Object.keys(observations).map((serialNumber) => {
+		return {
+			...observations[serialNumber],
+			serialNumber: serialNumber,
+		}
+	})
+	res.send(statusResponse)
 })
 
 app.listen(port, () => {

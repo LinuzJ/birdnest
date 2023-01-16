@@ -1,6 +1,6 @@
 import Head from "next/head"
 import React, { useEffect, useState } from "react"
-import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid"
+import { Table } from "rsuite"
 
 interface Drone {
 	serialNumber: string
@@ -19,17 +19,10 @@ interface Pilot {
 
 type Status = Pilot & { updatedAt: Date; serialNumber: string }
 
-const columns: GridColDef[] = [
-	{ field: "id", headerName: "PilotID", width: 70 },
-	{ field: "firstName", headerName: "First name", width: 130 },
-	{ field: "lastName", headerName: "Last name", width: 130 },
-	{ field: "phoneNumber", headerName: "Phone Number", width: 90 },
-	{ field: "email", headerName: "Email", width: 90 },
-	{ field: "serialNumber", headerName: "Drone SerialNumber", width: 130 },
-	{ field: "updateAt", headerName: "Last seen within premise", width: 130 },
-]
-
 const backendUrl = "localhost:5001"
+
+const { Column, HeaderCell, Cell } = Table
+
 export default function Home({}) {
 	const [rows, setRows] = useState<Status[]>([])
 
@@ -49,12 +42,43 @@ export default function Home({}) {
 	return (
 		<div>
 			<div>Birdnest</div>
-			<DataGrid
-				rows={rows}
-				columns={columns}
-				pageSize={10}
-				rowsPerPageOptions={[5]}
-			/>
+			<Table
+				height={400}
+				data={rows}
+				onRowClick={(rowData) => {
+					console.log(rowData)
+				}}
+			>
+				<Column width={60} align='center' fixed>
+					<HeaderCell>PilotID</HeaderCell>
+					<Cell dataKey='pilotId' />
+				</Column>
+
+				<Column width={150}>
+					<HeaderCell>First Name</HeaderCell>
+					<Cell dataKey='firstName' />
+				</Column>
+
+				<Column width={150}>
+					<HeaderCell>Last Name</HeaderCell>
+					<Cell dataKey='lastName' />
+				</Column>
+
+				<Column width={100}>
+					<HeaderCell>Phone Number</HeaderCell>
+					<Cell dataKey='phoneNumber' />
+				</Column>
+
+				<Column width={100}>
+					<HeaderCell>Email</HeaderCell>
+					<Cell dataKey='email' />
+				</Column>
+
+				<Column width={150}>
+					<HeaderCell>Drone Serial Number</HeaderCell>
+					<Cell dataKey='serialNumber' />
+				</Column>
+			</Table>
 		</div>
 	)
 }
