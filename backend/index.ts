@@ -1,6 +1,6 @@
 import express, { json } from "express"
 const { XMLParser, XMLBuilder, XMLValidator } = require("fast-xml-parser")
-
+console.log("hej")
 interface Drone {
 	serialNumber: string
 	positionY: number
@@ -24,11 +24,12 @@ interface Coord {
 type DroneObservationStatus = Pilot & { updatedAt: Date }
 
 const app = express()
-const port = 5000
+const port = 5001
 
 const dronesUrl: string = "assignments.reaktor.com/birdnest/drones"
 const pilotUrl: string = "assignments.reaktor.com/birdnest/pilots/"
 
+console.log("hej")
 // State of pilots that have had drones in the area in the previous 10min
 const store: { [serialNumber: string]: DroneObservationStatus } = {}
 
@@ -38,6 +39,7 @@ function distanceBetweenPoints(pointOne: Coord, pointTwo: Coord): number {
 	)
 }
 
+console.log("hej")
 function distanceBetweenDroneAndCenter(drone: Drone): number {
 	const centerCoords: Coord = {
 		x: 250000,
@@ -50,6 +52,7 @@ function distanceBetweenDroneAndCenter(drone: Drone): number {
 	return distanceBetweenPoints(centerCoords, droneCoords)
 }
 
+console.log("hej")
 // Function to get all drones within 500m of the birdsnest
 async function getAllCurrentDrones(): Promise<Drone[]> {
 	const parser = new XMLParser()
@@ -102,10 +105,12 @@ async function updatePilotStatus(listOfActievDrones: Drone[]) {
 		}
 	}
 }
+console.log("hej")
 
 app.get("/status", (req, res) => {
 	res.send(store)
 })
+console.log("hej")
 
 app.listen(port, () => {
 	console.log(`Example app listening on port ${port}`)
