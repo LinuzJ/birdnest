@@ -50,7 +50,9 @@ export default function Home({}) {
 				padding: "10%",
 			}}
 		>
-			<p style={{ fontSize: "3rem" }}>Birdnest</p>
+			<p className='header' style={{ fontSize: "3rem" }}>
+				Birdnest
+			</p>
 			<div style={{ width: "80%", maxWidth: "1200px" }}>
 				<Table
 					height={500}
@@ -61,40 +63,40 @@ export default function Home({}) {
 					wordWrap='break-word'
 				>
 					<Column width={200} align='center' fixed>
-						<HeaderCell>Pilot ID</HeaderCell>
+						<HeaderCell className='header'>Pilot ID</HeaderCell>
 						<Cell dataKey='pilotId' />
 					</Column>
 
 					<Column width={100}>
-						<HeaderCell>First Name</HeaderCell>
+						<HeaderCell className='header'>First Name</HeaderCell>
 						<Cell dataKey='firstName' />
 					</Column>
 
 					<Column width={100}>
-						<HeaderCell>Last Name</HeaderCell>
+						<HeaderCell className='header'>Last Name</HeaderCell>
 						<Cell dataKey='lastName' />
 					</Column>
 
 					<Column width={140}>
-						<HeaderCell>Phone Number</HeaderCell>
+						<HeaderCell className='header'>Phone Number</HeaderCell>
 						<Cell dataKey='phoneNumber' />
 					</Column>
 
 					<Column width={250}>
-						<HeaderCell>Email</HeaderCell>
+						<HeaderCell className='header'>Email</HeaderCell>
 						<Cell dataKey='email' />
 					</Column>
 
 					<Column width={170}>
-						<HeaderCell>Drone Serial Number</HeaderCell>
+						<HeaderCell className='header'>Drone Serial Number</HeaderCell>
 						<Cell dataKey='serialNumber' />
 					</Column>
 					<Column width={80}>
-						<HeaderCell>Most Recent Distance (m)</HeaderCell>
+						<HeaderCell className='header'>Most Recent Distance (m)</HeaderCell>
 						<Cell dataKey='mostRecentDistance' />
 					</Column>
 					<Column width={80}>
-						<HeaderCell>Closest Distance (m)</HeaderCell>
+						<HeaderCell className='header'>Closest Distance (m)</HeaderCell>
 						<Cell dataKey='closestDistance' />
 					</Column>
 				</Table>
