@@ -58,40 +58,46 @@ export default function Birdnest({
 			<div style={{ width: "100%", maxWidth: "1200px" }}>
 				<Table height={500} data={rows} wordWrap='break-word'>
 					<Column width={150} align='center' fixed>
-						<HeaderCell className='header'>Pilot ID</HeaderCell>
+						<HeaderCell style={{ color: "navy" }}>Pilot ID</HeaderCell>
 						<Cell dataKey='pilotId' />
 					</Column>
 
 					<Column width={100}>
-						<HeaderCell className='header'>First Name</HeaderCell>
+						<HeaderCell style={{ color: "navy" }}>First Name</HeaderCell>
 						<Cell dataKey='firstName' />
 					</Column>
 
 					<Column width={100}>
-						<HeaderCell className='header'>Last Name</HeaderCell>
+						<HeaderCell style={{ color: "navy" }}>Last Name</HeaderCell>
 						<Cell dataKey='lastName' />
 					</Column>
 
 					<Column width={140}>
-						<HeaderCell className='header'>Phone Number</HeaderCell>
+						<HeaderCell style={{ color: "navy" }}>Phone Number</HeaderCell>
 						<Cell dataKey='phoneNumber' />
 					</Column>
 
 					<Column width={250}>
-						<HeaderCell className='header'>Email</HeaderCell>
+						<HeaderCell style={{ color: "navy" }}>Email</HeaderCell>
 						<Cell dataKey='email' />
 					</Column>
 
 					<Column width={170}>
-						<HeaderCell className='header'>Drone Serial Number</HeaderCell>
+						<HeaderCell style={{ color: "navy" }}>
+							Drone Serial Number
+						</HeaderCell>
 						<Cell dataKey='serialNumber' />
 					</Column>
 					<Column width={80}>
-						<HeaderCell className='header'>Most Recent Distance (m)</HeaderCell>
+						<HeaderCell style={{ color: "navy" }}>
+							Most Recent Distance (m)
+						</HeaderCell>
 						<Cell dataKey='mostRecentDistance' />
 					</Column>
 					<Column width={80}>
-						<HeaderCell className='header'>Closest Distance (m)</HeaderCell>
+						<HeaderCell style={{ color: "navy" }}>
+							Closest Distance (m)
+						</HeaderCell>
 						<Cell dataKey='closestDistance' />
 					</Column>
 				</Table>
