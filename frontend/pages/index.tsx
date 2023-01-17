@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from "react"
-import { Table, Container } from "rsuite"
+import { Table } from "rsuite"
 import "rsuite-table/dist/css/rsuite-table.css"
-
-interface Drone {
-	serialNumber: string
-	positionY: number
-	positionX: number
-}
 
 interface Pilot {
 	pilotId: string
@@ -19,12 +13,17 @@ interface Pilot {
 
 type Status = Pilot & { updatedAt: Date; serialNumber: string }
 
-const backendUrl = "http://localhost:5001"
+const localUrl = "http://127.0.0.1:5001"
+const backendUrl = process.env.NODE_ENV === "production" ? "" : localUrl
 
 const { Column, HeaderCell, Cell } = Table
 
-export default function Home({}) {
-	const [rows, setRows] = useState<Status[]>([])
+export default function Birdnest({
+	initialStatus,
+}: {
+	initialStatus: Status[]
+}) {
+	const [rows, setRows] = useState<Status[]>(initialStatus)
 
 	useEffect(() => {
 		let interval = setInterval(async () => {
@@ -48,26 +47,17 @@ export default function Home({}) {
 				flexDirection: "column",
 				fontFamily: "monospace",
 				alignItems: "center",
-				padding: "10%",
+				padding: "0 10%",
 			}}
 		>
-			<p className='header' style={{ fontSize: "3rem" }}>
-				Birdnest
-			</p>
-			<p>
+			<p style={{ fontSize: "3rem", color: "navy" }}>Birdnest</p>
+			<p style={{ padding: "0 20px" }}>
 				List of all pilots that have flown their drones within 100m of the
 				birdnest in the past 10min
 			</p>
-			<div style={{ width: "80%", maxWidth: "1200px" }}>
-				<Table
-					height={500}
-					data={rows}
-					onRowClick={(rowData) => {
-						console.log(rowData)
-					}}
-					wordWrap='break-word'
-				>
-					<Column width={200} align='center' fixed>
+			<div style={{ width: "100%", maxWidth: "1200px" }}>
+				<Table height={500} data={rows} wordWrap='break-word'>
+					<Column width={150} align='center' fixed>
 						<HeaderCell className='header'>Pilot ID</HeaderCell>
 						<Cell dataKey='pilotId' />
 					</Column>
@@ -108,4 +98,12 @@ export default function Home({}) {
 			</div>
 		</div>
 	)
+}
+
+export async function getServerSideProps() {
+	const res = await fetch(`${localUrl}/status`)
+	const initialStatus = await res.json()
+
+	// Pass data to the page via props
+	return { props: { initialStatus } }
 }
