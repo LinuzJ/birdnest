@@ -1,6 +1,8 @@
 Solution to Reaktors trainee assignment for the summer of 2023
+
+[DEMO](https://reaktor.linusjern.com/)
  
- The backend is built using bun.sh (a new javascript runtime with native support for typescript). To run the backend:
+ The backend is built using [bun.sh](https://bun.sh/) (a new javascript runtime with native support for typescript). To run the backend:
  1. `Install bun.sh`
  2. `cd backend && bun install && bun run index.ts`
 
