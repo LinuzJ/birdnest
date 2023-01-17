@@ -34,6 +34,8 @@ app.get("/status", (_, res) => {
 			serialNumber: serialNumber,
 		}
 	})
+	statusResponse.sort((a, b) => a.mostRecentDistance - b.mostRecentDistance)
+
 	res.send(statusResponse)
 })
 
